@@ -7,10 +7,12 @@ interface AuthResponse {
   token: string;
 }
 
+const baseUrl = "https://aynatask.onrender.com";
+
 export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:5000/api/auth",
+    baseUrl: `${baseUrl}/api/auth`,
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as any).auth.token;
       if (token) {
