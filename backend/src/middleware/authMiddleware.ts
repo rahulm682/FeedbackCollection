@@ -5,7 +5,6 @@ interface JwtPayload {
   id: string;
 }
 
-// Extend the Request interface to include a user property
 declare global {
   namespace Express {
     interface Request {
@@ -21,7 +20,7 @@ export const protect = (req: Request, res: Response, next: NextFunction) => {
     try {
       token = req.headers.authorization.split(' ')[1];
       const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your_jwt_secret') as JwtPayload;
-      req.user = decoded; // Attach user ID to request
+      req.user = decoded;
       next();
     } catch (error) {
       console.error(error);

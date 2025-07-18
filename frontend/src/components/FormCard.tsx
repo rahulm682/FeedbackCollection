@@ -1,8 +1,8 @@
 import React from 'react';
-import { Card, CardContent, Typography, Button, Box, TextField, InputAdornment, IconButton } from '@mui/material';
+import { Card, CardContent, Typography, Button, TextField, InputAdornment, IconButton } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { useNavigate } from 'react-router-dom';
-import { type Form } from '../types/index.ts'; // Import Form interface
+import { type Form } from '../types/index.ts';
 
 interface FormCardProps {
   form: Form;
@@ -10,11 +10,11 @@ interface FormCardProps {
 
 const FormCard: React.FC<FormCardProps> = ({ form }) => {
   const navigate = useNavigate();
-  const baseUrl = window.location.origin; // Get the base URL of the frontend
+  const baseUrl = window.location.origin;
 
   const handleCopyLink = (formId: string) => {
     navigator.clipboard.writeText(`${baseUrl}/submit/${formId}`);
-    alert('Link copied to clipboard!'); // Consider a Snackbar/Toast for better UX
+    alert('Link copied to clipboard!');
   };
 
   return (

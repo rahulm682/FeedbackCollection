@@ -3,6 +3,6 @@ import { submitResponse } from '../controllers/responseController';
 
 const router = express.Router();
 
-router.post('/', submitResponse); // Public
+router.post('/', submitResponse);
 
 export default router;

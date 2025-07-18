@@ -13,7 +13,7 @@ export const createForm = async (req: Request, res: Response) => {
         return res.status(401).json({ message: 'Not authorized, user ID missing' });
     }
     const form = await Form.create({
-      admin: req.user.id, // Get admin ID from authenticated user
+      admin: req.user.id,
       title,
       description,
       questions,
@@ -26,7 +26,7 @@ export const createForm = async (req: Request, res: Response) => {
 
 // @desc    Get all forms for an admin
 // @route   GET /api/forms
-// @access  Private (Admin)
+// @access  Private
 export const getAdminForms = async (req: Request, res: Response) => {
   try {
     if (!req.user || !req.user.id) {
@@ -39,12 +39,12 @@ export const getAdminForms = async (req: Request, res: Response) => {
   }
 };
 
-// @desc    Get a single form by ID (public access for submission)
+// @desc    Get a single form by ID
 // @route   GET /api/forms/:id
 // @access  Public
 export const getFormById = async (req: Request, res: Response) => {
   try {
-    const form = await Form.findById(req.params.id).select('-admin'); // Don't expose admin ID
+    const form = await Form.findById(req.params.id).select('-admin');
     if (!form) {
       return res.status(404).json({ message: 'Form not found' });
     }
@@ -54,9 +54,9 @@ export const getFormById = async (req: Request, res: Response) => {
   }
 };
 
-// @desc    Get responses for a specific form (Admin only)
+// @desc    Get responses for a specific form 
 // @route   GET /api/forms/:formId/responses
-// @access  Private (Admin)
+// @access  Private
 export const getFormResponses = async (req: Request, res: Response) => {
   try {
     const formId = req.params.formId;
@@ -64,7 +64,6 @@ export const getFormResponses = async (req: Request, res: Response) => {
         return res.status(401).json({ message: 'Not authorized, user ID missing' });
     }
 
-    // Verify that the form belongs to the authenticated admin
     const form = await Form.findOne({ _id: formId, admin: req.user.id });
     if (!form) {
       return res.status(404).json({ message: 'Form not found or you are not authorized to view its responses' });
@@ -74,5 +73,61 @@ export const getFormResponses = async (req: Request, res: Response) => {
     res.json(responses);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Export responses for a specific form as CSV
+// @route   GET /api/forms/:formId/responses/export-csv
+// @access  Private
+export const exportFormResponsesCsv = async (req: Request, res: Response) => {
+  try {
+    const formId = req.params.formId;
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ message: 'Not authorized, user ID missing' });
+    }
+
+    const form = await Form.findOne({ _id: formId, admin: req.user.id });
+    if (!form) {
+      return res.status(404).json({ message: 'Form not found or you are not authorized to export its responses' });
+    }
+
+    const responses = await FeedbackResponse.find({ form: formId }).sort({ submittedAt: 1 });
+
+    if (responses.length === 0) {
+      return res.status(404).json({ message: 'No responses found for this form to export.' });
+    }
+
+    // --- CSV Generation Logic ---
+    const headers = ['Submission Time', ...form.questions.map(q => `"${q.questionText.replace(/"/g, '""')}"`)];
+    let csv = headers.join(',') + '\n';
+
+    responses.forEach(response => {
+      const row: string[] = [];
+      row.push(`"${new Date(response.submittedAt).toLocaleString().replace(/"/g, '""')}"`);
+
+      form.questions.forEach(question => {
+        const answer = response.answers.find(a => a.questionId === question.id);
+        let answerValue = '';
+
+        if (answer) {
+          if (question.type === 'text') {
+            answerValue = answer.answerText || '';
+          } else if (question.type === 'multiple-choice') {
+            answerValue = answer.selectedOptions?.join('; ') || '';
+          }
+        }
+        row.push(`"${answerValue.replace(/"/g, '""')}"`);
+      });
+      csv += row.join(',') + '\n';
+    });
+
+    // Set headers for CSV download
+    res.header('Content-Type', 'text/csv');
+    res.attachment(`${form.title.replace(/[^a-z0-9]/gi, '_')}_responses.csv`);
+    res.send(csv);
+
+  } catch (error: any) {
+    console.error('Error exporting CSV:', error);
+    res.status(500).json({ message: 'Server error during CSV export.', error: error.message });
   }
 };

@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import { useCreateFormMutation } from './../features/forms/formsApi';
 import { useNavigate } from 'react-router-dom';
 import { type Question } from './../types/index.ts';
-import { v4 as uuidv4 } from 'uuid'; // For generating unique IDs for questions
-
-// Material-UI Imports
+import { v4 as uuidv4 } from 'uuid';
 import {
   Box,
   Button,
@@ -17,8 +15,6 @@ import {
   Snackbar,
 } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-
-// Import the new QuestionBuilder component
 import QuestionBuilder from '../components/QuestionBuilder';
 
 const CreateFormPage: React.FC = () => {
@@ -45,7 +41,7 @@ const CreateFormPage: React.FC = () => {
     setQuestions([
       ...questions,
       {
-        id: uuidv4(), // Generate a unique ID for the question
+        id: uuidv4(), // unique ID for the question
         type,
         questionText: '',
         options: type === 'multiple-choice' ? [''] : undefined,
@@ -80,7 +76,6 @@ const CreateFormPage: React.FC = () => {
     setQuestions(questions.filter((_, i) => i !== index));
   };
 
-  // This function is correctly defined within CreateFormPage
   const removeOption = (questionIndex: number, optionIndex: number) => {
     const newQuestions = [...questions];
     if (newQuestions[questionIndex].type === 'multiple-choice' && newQuestions[questionIndex].options) {
@@ -93,7 +88,7 @@ const CreateFormPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Basic validation
+    
     if (!title.trim()) {
       showSnackbar('Form title is required.', 'error');
       return;
@@ -164,7 +159,7 @@ const CreateFormPage: React.FC = () => {
           <Box sx={{ mb: 4, display: 'flex', flexDirection: 'column', gap: 3 }}>
             {questions.map((q, qIndex) => (
               <QuestionBuilder
-                key={q.id} // Use question.id as key
+                key={q.id}
                 question={q}
                 index={qIndex}
                 onUpdate={updateQuestion}

@@ -45,7 +45,7 @@ const RegisterPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setPasswordMismatchError(null); // Clear previous error
+    setPasswordMismatchError(null);
 
     if (password !== confirmPassword) {
       setPasswordMismatchError('Passwords do not match!');

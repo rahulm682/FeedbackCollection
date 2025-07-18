@@ -14,7 +14,6 @@ export const submitResponse = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'Form not found' });
     }
 
-    // Basic validation: Check if all required questions have answers
     for (const question of form.questions) {
         if (question.required) {
             const submittedAnswer = answers.find((ans: any) => ans.questionId === question.id);

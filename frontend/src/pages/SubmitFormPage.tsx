@@ -3,8 +3,6 @@ import { useParams } from 'react-router-dom';
 import { useGetFormByIdQuery } from './../features/forms/formsApi';
 import { useSubmitResponseMutation } from './../features/responses/responsesApi';
 import { type Answer, type Question } from './../types/index.ts';
-
-// Material-UI Imports
 import {
   Box,
   Button,
@@ -42,7 +40,6 @@ const SubmitFormPage: React.FC = () => {
 
   useEffect(() => {
     if (form && !isSubmitted) {
-      // Initialize answers state based on form questions
       const initialAnswers: Answer[] = form.questions.map(q => ({
         questionId: q.id,
         answerText: q.type === 'text' ? '' : undefined,
@@ -91,7 +88,6 @@ const SubmitFormPage: React.FC = () => {
     e.preventDefault();
     if (!formId) return;
 
-    // Client-side validation for required questions
     const validationErrors: string[] = [];
     form?.questions.forEach(q => {
       if (q.required) {

@@ -1,10 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { type Form, type Question, type Response } from '../../types/index.ts'; // Ensure these types are correctly imported
+import { type Form, type Question, type Response } from '../../types/index.ts';
 
 export const formsApi = createApi({
   reducerPath: 'formsApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:5000/api/forms', // Replace with your backend URL
+    baseUrl: 'http://localhost:5000/api/forms',
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as any).auth.token;
       if (token) {

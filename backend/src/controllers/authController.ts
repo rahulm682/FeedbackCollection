@@ -45,7 +45,6 @@ export const loginUser = async (req: Request, res: Response) => {
     const user: IUser | null = await User.findOne({ email });
 
     if (!user) {
-      // Handle case where user is not found
       return res.status(401).json({ message: "Invalid credentials" });
     }
 

@@ -1,7 +1,5 @@
 import React, { useEffect } from "react";
 import { useGetAdminFormsQuery } from "./../features/forms/formsApi";
-
-// Material-UI Imports
 import {
   Box,
   Typography,
@@ -10,8 +8,6 @@ import {
   CircularProgress,
   Alert,
 } from "@mui/material";
-
-// Import the new FormCard component
 import FormCard from "../components/FormCard";
 import { useSelector } from "react-redux";
 import type { RootState } from "../app/store";
@@ -25,7 +21,7 @@ const DashboardPage: React.FC = () => {
     if (isAuthenticated) {
       refetch(); // Force a refetch of forms when user logs in/out/registers
     }
-  }, [isAuthenticated, refetch]); // Depend on isAuthenticated and refetch
+  }, [isAuthenticated, refetch]);
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -42,7 +38,7 @@ const DashboardPage: React.FC = () => {
           component="h1"
           sx={{ fontWeight: "bold", color: "text.primary" }}
         >
-          Admin Dashboard
+          Dashboard
         </Typography>
       </Box>
 
@@ -73,7 +69,7 @@ const DashboardPage: React.FC = () => {
         <Grid container spacing={3}>
           {forms.map((form) => (
             <Grid item xs={12} sm={6} md={4} key={form._id}>
-              <FormCard form={form} /> {/* Using the new FormCard component */}
+              <FormCard form={form} />
             </Grid>
           ))}
         </Grid>

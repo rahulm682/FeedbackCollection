@@ -2,14 +2,14 @@ import mongoose, { Document, Schema } from 'mongoose';
 
 // Define the interface for a single answer
 export interface IAnswer {
-  questionId: string; // Reference to the question ID from the Form
-  answerText?: string; // For text answers
-  selectedOptions?: string[]; // For multiple-choice answers (can select multiple if allowed)
+  questionId: string;
+  answerText?: string;
+  selectedOptions?: string[];
 }
 
 // Define the Response document interface
 export interface IResponse extends Document {
-  form: mongoose.Types.ObjectId; // Reference to the Form this response belongs to
+  form: mongoose.Types.ObjectId;
   answers: IAnswer[];
   submittedAt: Date;
 }
@@ -18,7 +18,7 @@ export interface IResponse extends Document {
 const ResponseSchema: Schema = new Schema({
   form: {
     type: Schema.Types.ObjectId,
-    ref: 'Form', // References the Form model
+    ref: 'Form',
     required: true,
   },
   answers: [
@@ -34,5 +34,4 @@ const ResponseSchema: Schema = new Schema({
   },
 });
 
-// Export the Response model
 export const Response = mongoose.model<IResponse>('Response', ResponseSchema);

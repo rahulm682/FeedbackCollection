@@ -11,8 +11,8 @@ connectDB();
 
 const app = express();
 
-app.use(cors()); // Enable CORS for all origins (adjust in production)
-app.use(express.json()); // Body parser for JSON
+app.use(cors()); // Enable CORS for all origins, should be change when using in production
+app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/forms', formRoutes);

@@ -1,10 +1,9 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-// Define the User document interface
 export interface IUser extends Document {
   name: string;
   email: string;
-  password: string; // Hashed password
+  password: string;
   createdAt: Date;
 }
 
@@ -32,5 +31,4 @@ const UserSchema: Schema = new Schema({
   },
 });
 
-// Export the User model
 export const User = mongoose.model<IUser>("User", UserSchema);

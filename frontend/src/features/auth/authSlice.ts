@@ -1,8 +1,8 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import { type User } from '../../types/index.ts'; // Ensure User type includes 'name'
+import { type User } from '../../types/index.ts';
 import { authApi } from './authApi';
-import { formsApi } from '../forms/formsApi'; // Import formsApi
-import { responsesApi } from '../responses/responsesApi'; // Import responsesApi
+import { formsApi } from '../forms/formsApi';
+import { responsesApi } from '../responses/responsesApi';
 
 interface AuthState {
   user: User | null;
@@ -37,7 +37,7 @@ const authSlice = createSlice({
       localStorage.setItem('user', JSON.stringify(action.payload.user));
       localStorage.setItem('token', action.payload.token);
       // Invalidate all API cache tags on successful login/registration
-      authSlice.caseReducers.resetAllApiState(); // Call the internal helper
+      authSlice.caseReducers.resetAllApiState();
     },
     logout: (state) => {
       state.user = null;
@@ -46,7 +46,7 @@ const authSlice = createSlice({
       localStorage.removeItem('user');
       localStorage.removeItem('token');
       // Invalidate all API cache tags on logout
-      authSlice.caseReducers.resetAllApiState(); // Call the internal helper
+      authSlice.caseReducers.resetAllApiState();
     },
     // New internal reducer to handle full API state reset
     resetAllApiState: () => {
@@ -54,11 +54,10 @@ const authSlice = createSlice({
       // This clears all cached data across the specified API slices.
       formsApi.util.resetApiState();
       responsesApi.util.resetApiState();
-      authApi.util.resetApiState(); // Also reset auth API cache if needed
+      authApi.util.resetApiState();
     },
   },
   extraReducers: (builder) => {
-    // Handle RTK Query mutations for login/register
     builder
       .addMatcher(authApi.endpoints.login.matchPending, (state) => {
         state.isLoading = true;
@@ -71,8 +70,6 @@ const authSlice = createSlice({
         state.isAuthenticated = true;
         localStorage.setItem('user', JSON.stringify(action.payload));
         localStorage.setItem('token', action.payload.token);
-        // Dispatch resetAllApiState after successful login
-        // Note: This is handled by the setCredentials reducer now.
       })
       .addMatcher(authApi.endpoints.login.matchRejected, (state, action) => {
         state.isLoading = false;
@@ -89,8 +86,6 @@ const authSlice = createSlice({
         state.isAuthenticated = true;
         localStorage.setItem('user', JSON.stringify(action.payload));
         localStorage.setItem('token', action.payload.token);
-        // Dispatch resetAllApiState after successful registration
-        // Note: This is handled by the setCredentials reducer now.
       })
       .addMatcher(authApi.endpoints.register.matchRejected, (state, action) => {
         state.isLoading = false;
@@ -99,6 +94,5 @@ const authSlice = createSlice({
   },
 });
 
-// Export the new action creator for invalidating tags
-export const { setCredentials, logout, resetAllApiState } = authSlice.actions; // Renamed invalidateAllTags to resetAllApiState
+export const { setCredentials, logout, resetAllApiState } = authSlice.actions;
 export default authSlice.reducer;

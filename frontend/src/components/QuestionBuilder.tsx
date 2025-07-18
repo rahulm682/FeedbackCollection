@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { type Question } from '../types/index.ts'; // Import Question interface
+import { type Question } from '../types/index.ts';
 
 interface QuestionBuilderProps {
   question: Question;
@@ -51,18 +51,6 @@ const QuestionBuilder: React.FC<QuestionBuilderProps> = ({
         required
         sx={{ mb: 2 }}
       />
-
-      {/* <FormControl fullWidth variant="outlined" sx={{ mb: 2 }}>
-        <InputLabel>Question Type</InputLabel>
-        <Select
-          value={question.type}
-          onChange={(e) => onUpdate(index, 'type', e.target.value as 'text' | 'multiple-choice')}
-          label="Question Type"
-        >
-          <MenuItem value="text">Text Input</MenuItem>
-          <MenuItem value="multiple-choice">Multiple Choice</MenuItem>
-        </Select>
-      </FormControl> */}
 
       {question.type === 'multiple-choice' && (
         <Box sx={{ mb: 2 }}>
