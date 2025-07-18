@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { type Form, type Question, type Response } from '../../types/index.ts';
 
-const baseUrl = "http://localhost:5000";
+const baseUrl = "https://aynatask.onrender.com";
 
 export const formsApi = createApi({
   reducerPath: 'formsApi',
