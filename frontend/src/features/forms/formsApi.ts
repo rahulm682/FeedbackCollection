@@ -52,7 +52,7 @@ export const formsApi = createApi({
     }),
     getAdminFormDetails: builder.query<Form, string>({
       query: (formId) => `/${formId}/admin-details`,
-      providesTags: (result, error, id) => [{ type: "Form", id }],
+      providesTags: (_result, _error, id) => [{ type: "Form", id }],
     }),
   }),
 });

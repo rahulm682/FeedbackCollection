@@ -19,7 +19,6 @@ import {
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import QuestionBuilder from "../components/QuestionBuilder";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 const CreateFormPage: React.FC = () => {
   const [title, setTitle] = useState("");
