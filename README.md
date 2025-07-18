@@ -1,4 +1,4 @@
-````markdown
+<!-- ````markdown -->
 # Feedback Platform
 
 A full-stack web application designed to allow administrators to create custom feedback forms with various question types, share them publicly for response collection, and view submitted responses in a structured or summarized format. The application features user authentication for admin access and a responsive user interface built with React and Material-UI.
@@ -240,10 +240,4 @@ AynaTask-6405d8e364a23089a1e7a1765fc83bc7f4159057/
     ├── tsconfig.app.json      # TypeScript config for application code
     ├── tsconfig.node.json     # TypeScript config for Node.js specific files (like vite.config.ts)
     └── vite.config.ts         # Vite configuration
-```
-
-## License
-
-This project is licensed under the MIT License.
-
 ```
