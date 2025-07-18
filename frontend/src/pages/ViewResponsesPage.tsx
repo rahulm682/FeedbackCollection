@@ -111,7 +111,7 @@ const ViewResponsesPage: React.FC = () => {
       return;
     }
 
-    const exportUrl = `${baseUrl}i/forms/${formId}/responses/export-csv`;
+    const exportUrl = `${baseUrl}/forms/${formId}/responses/export-csv`;
 
     try {
       const response = await fetch(exportUrl, {
