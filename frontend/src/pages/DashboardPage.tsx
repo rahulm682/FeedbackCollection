@@ -66,17 +66,17 @@ const DashboardPage: React.FC = () => {
       )}
 
       {!isLoading && !error && forms && forms.length > 0 && (
-        <Grid container spacing={3}>
+        <Grid container spacing={4}>
           {forms.map((form) => (
             <Box
               key={form._id}
               sx={{
                 width: "100%",
                 "@media (min-width:600px)": {
-                  width: "50%",
+                  width: "75%",
                 },
                 "@media (min-width:900px)": {
-                  width: "33.3333%",
+                  width: "40%",
                 },
                 px: 1.5,
                 py: 1.5,

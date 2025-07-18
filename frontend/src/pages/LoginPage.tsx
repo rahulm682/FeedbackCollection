@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { useLoginMutation } from './../features/auth/authApi';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { setCredentials } from './../features/auth/authSlice';
-import { type RootState } from './../app/store';
+import React, { useState, useEffect } from "react";
+import { useLoginMutation } from "./../features/auth/authApi";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { setCredentials } from "./../features/auth/authSlice";
+import { type RootState } from "./../app/store";
 import {
   Box,
   Button,
@@ -14,11 +14,11 @@ import {
   CircularProgress,
   Link as MuiLink,
   Alert,
-} from '@mui/material';
+} from "@mui/material";
 
 const LoginPage: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [login, { isLoading, error, isSuccess, data }] = useLoginMutation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -26,14 +26,14 @@ const LoginPage: React.FC = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/dashboard');
+      navigate("/dashboard");
     }
   }, [isAuthenticated, navigate]);
 
   useEffect(() => {
     if (isSuccess && data) {
       dispatch(setCredentials({ user: data, token: data.token }));
-      navigate('/dashboard');
+      navigate("/dashboard");
     }
   }, [isSuccess, data, navigate, dispatch]);
 
@@ -43,19 +43,37 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <Container component="main" maxWidth="xs" sx={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <Paper elevation={6} sx={{ p: 4, borderRadius: 3, width: '100%' }}>
+    <Container
+      component="main"
+      maxWidth="xs"
+      sx={{
+        height: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <Paper elevation={6} sx={{ p: 4, borderRadius: 3, width: "100%" }}>
         <Box
           sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
           }}
         >
-          <Typography component="h1" variant="h4" sx={{ mb: 3, fontWeight: 'bold', color: 'text.primary' }}>
+          <Typography
+            component="h1"
+            variant="h4"
+            sx={{ mb: 3, fontWeight: "bold", color: "text.primary" }}
+          >
             Admin Login
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1, width: '100%' }}>
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            noValidate
+            sx={{ mt: 1, width: "100%" }}
+          >
             <TextField
               margin="normal"
               required
@@ -86,22 +104,32 @@ const LoginPage: React.FC = () => {
             />
             {error && (
               <Alert severity="error" sx={{ mb: 2 }}>
-                {(error as any).data?.message || 'Login failed. Please check your credentials.'}
+                {(error as any).data?.message ||
+                  "Login failed. Please check your credentials."}
               </Alert>
             )}
             <Button
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ py: 1.5, mb: 2, fontSize: '1.1rem' }}
+              sx={{ py: 1.5, mb: 2, fontSize: "1.1rem" }}
               disabled={isLoading}
             >
-              {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Login'}
+              {isLoading ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                "Login"
+              )}
             </Button>
-            <Box sx={{ textAlign: 'center', mt: 2 }}>
+            <Box sx={{ textAlign: "center", mt: 2 }}>
               <Typography variant="body2" color="text.secondary">
-                Don't have an account?{' '}
-                <MuiLink component="button" onClick={() => navigate('/register')} variant="body2" sx={{ fontWeight: 'bold' }}>
+                Don't have an account?{" "}
+                <MuiLink
+                  component="button"
+                  onClick={() => navigate("/register")}
+                  variant="body2"
+                  sx={{ fontWeight: "bold" }}
+                >
                   Register here
                 </MuiLink>
               </Typography>

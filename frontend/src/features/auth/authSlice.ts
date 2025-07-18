@@ -1,8 +1,8 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import { type User } from '../../types/index.ts';
-import { authApi } from './authApi';
-import { formsApi } from '../forms/formsApi';
-import { responsesApi } from '../responses/responsesApi';
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { type User } from "../../types/index.ts";
+import { authApi } from "./authApi";
+import { formsApi } from "../forms/formsApi";
+import { responsesApi } from "../responses/responsesApi";
 
 interface AuthState {
   user: User | null;
@@ -12,8 +12,8 @@ interface AuthState {
   error: string | null;
 }
 
-const user = localStorage.getItem('user');
-const token = localStorage.getItem('token');
+const user = localStorage.getItem("user");
+const token = localStorage.getItem("token");
 
 const initialState: AuthState = {
   user: user ? JSON.parse(user) : null,
@@ -24,7 +24,7 @@ const initialState: AuthState = {
 };
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
     setCredentials: (
@@ -34,8 +34,8 @@ const authSlice = createSlice({
       state.user = action.payload.user;
       state.token = action.payload.token;
       state.isAuthenticated = true;
-      localStorage.setItem('user', JSON.stringify(action.payload.user));
-      localStorage.setItem('token', action.payload.token);
+      localStorage.setItem("user", JSON.stringify(action.payload.user));
+      localStorage.setItem("token", action.payload.token);
       // Invalidate all API cache tags on successful login/registration
       authSlice.caseReducers.resetAllApiState();
     },
@@ -43,8 +43,8 @@ const authSlice = createSlice({
       state.user = null;
       state.token = null;
       state.isAuthenticated = false;
-      localStorage.removeItem('user');
-      localStorage.removeItem('token');
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
       // Invalidate all API cache tags on logout
       authSlice.caseReducers.resetAllApiState();
     },
@@ -68,28 +68,31 @@ const authSlice = createSlice({
         state.user = action.payload;
         state.token = action.payload.token;
         state.isAuthenticated = true;
-        localStorage.setItem('user', JSON.stringify(action.payload));
-        localStorage.setItem('token', action.payload.token);
+        localStorage.setItem("user", JSON.stringify(action.payload));
+        localStorage.setItem("token", action.payload.token);
       })
       .addMatcher(authApi.endpoints.login.matchRejected, (state, action) => {
         state.isLoading = false;
-        state.error = (action.payload as any)?.message || 'Login failed';
+        state.error = (action.payload as any)?.message || "Login failed";
       })
       .addMatcher(authApi.endpoints.register.matchPending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
-      .addMatcher(authApi.endpoints.register.matchFulfilled, (state, action) => {
-        state.isLoading = false;
-        state.user = action.payload;
-        state.token = action.payload.token;
-        state.isAuthenticated = true;
-        localStorage.setItem('user', JSON.stringify(action.payload));
-        localStorage.setItem('token', action.payload.token);
-      })
+      .addMatcher(
+        authApi.endpoints.register.matchFulfilled,
+        (state, action) => {
+          state.isLoading = false;
+          state.user = action.payload;
+          state.token = action.payload.token;
+          state.isAuthenticated = true;
+          localStorage.setItem("user", JSON.stringify(action.payload));
+          localStorage.setItem("token", action.payload.token);
+        }
+      )
       .addMatcher(authApi.endpoints.register.matchRejected, (state, action) => {
         state.isLoading = false;
-        state.error = (action.payload as any)?.message || 'Registration failed';
+        state.error = (action.payload as any)?.message || "Registration failed";
       });
   },
 });

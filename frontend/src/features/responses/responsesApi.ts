@@ -1,10 +1,10 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { type Answer } from '../../types/index.ts';
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { type Answer } from "../../types/index.ts";
 
-const baseUrl = "https://aynatask.onrender.com";
+const baseUrl = import.meta.env.VITE_BASE_URL;
 
 export const responsesApi = createApi({
-  reducerPath: 'responsesApi',
+  reducerPath: "responsesApi",
   baseQuery: fetchBaseQuery({
     baseUrl: `${baseUrl}/api/responses`,
   }),
@@ -14,8 +14,8 @@ export const responsesApi = createApi({
       { formId: string; answers: Answer[] }
     >({
       query: (responseDetails) => ({
-        url: '/',
-        method: 'POST',
+        url: "/",
+        method: "POST",
         body: responseDetails,
       }),
     }),

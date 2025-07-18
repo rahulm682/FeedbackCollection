@@ -1,10 +1,10 @@
-import { configureStore } from '@reduxjs/toolkit';
-import { setupListeners } from '@reduxjs/toolkit/query';
-import { authApi } from '../features/auth/authApi.ts';
-import { formsApi } from '../features/forms/formsApi.ts';
-import { responsesApi } from '../features/responses/responsesApi.ts';
-import authReducer from '../features/auth/authSlice.ts';
-import themeReducer from '../features/theme/themeSlice.ts';
+import { configureStore } from "@reduxjs/toolkit";
+import { setupListeners } from "@reduxjs/toolkit/query";
+import { authApi } from "../features/auth/authApi.ts";
+import { formsApi } from "../features/forms/formsApi.ts";
+import { responsesApi } from "../features/responses/responsesApi.ts";
+import authReducer from "../features/auth/authSlice.ts";
+import themeReducer from "../features/theme/themeSlice.ts";
 
 export const store = configureStore({
   reducer: {
@@ -15,7 +15,11 @@ export const store = configureStore({
     theme: themeReducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(authApi.middleware, formsApi.middleware, responsesApi.middleware),
+    getDefaultMiddleware().concat(
+      authApi.middleware,
+      formsApi.middleware,
+      responsesApi.middleware
+    ),
 });
 
 setupListeners(store.dispatch);
