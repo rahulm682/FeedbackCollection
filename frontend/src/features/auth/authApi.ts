@@ -7,7 +7,7 @@ interface AuthResponse {
   token: string;
 }
 
-const baseUrl = "http://localhost:5000";
+const baseUrl = "https://aynatask.onrender.com";
 
 export const authApi = createApi({
   reducerPath: "authApi",
