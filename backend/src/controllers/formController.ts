@@ -1,22 +1,25 @@
-import { Request, Response } from 'express';
-import { Form, IForm } from '../models/Form';
-import { Response as FeedbackResponse, IResponse } from '../models/Response';
+import { Request, Response } from "express";
+import { Form, IForm } from "../models/Form";
+import { Response as FeedbackResponse, IResponse } from "../models/Response";
 
 // @desc    Create a new form
 // @route   POST /api/forms
 // @access  Private (Admin)
 export const createForm = async (req: Request, res: Response) => {
-  const { title, description, questions } = req.body;
+  const { title, description, questions, expiresAt } = req.body;
 
   try {
     if (!req.user || !req.user.id) {
-        return res.status(401).json({ message: 'Not authorized, user ID missing' });
+      return res
+        .status(401)
+        .json({ message: "Not authorized, user ID missing" });
     }
     const form = await Form.create({
       admin: req.user.id,
       title,
       description,
       questions,
+      expiresAt: expiresAt || null,
     });
     res.status(201).json(form);
   } catch (error: any) {
@@ -30,9 +33,13 @@ export const createForm = async (req: Request, res: Response) => {
 export const getAdminForms = async (req: Request, res: Response) => {
   try {
     if (!req.user || !req.user.id) {
-        return res.status(401).json({ message: 'Not authorized, user ID missing' });
+      return res
+        .status(401)
+        .json({ message: "Not authorized, user ID missing" });
     }
-    const forms = await Form.find({ admin: req.user.id }).sort({ createdAt: -1 });
+    const forms = await Form.find({ admin: req.user.id }).sort({
+      createdAt: -1,
+    });
     res.json(forms);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -44,32 +51,55 @@ export const getAdminForms = async (req: Request, res: Response) => {
 // @access  Public
 export const getFormById = async (req: Request, res: Response) => {
   try {
-    const form = await Form.findById(req.params.id).select('-admin');
+    const form = await Form.findById(req.params.id).select("-admin");
     if (!form) {
-      return res.status(404).json({ message: 'Form not found' });
+      return res.status(404).json({ message: "Form not found" });
     }
+
+    // Check if the form has expired
+    if (form.expiresAt && form.expiresAt < new Date()) {
+      return res
+        .status(404)
+        .json({
+          message: "Form has expired and is no longer accepting responses.",
+        });
+    }
+
     res.json(form);
   } catch (error: any) {
+    // Handle CastError for invalid IDs more gracefully
+    if (error.name === "CastError" && error.path === "_id") {
+      return res.status(400).json({ message: "Invalid form ID format." });
+    }
     res.status(500).json({ message: error.message });
   }
 };
 
-// @desc    Get responses for a specific form 
+// @desc    Get responses for a specific form
 // @route   GET /api/forms/:formId/responses
 // @access  Private
 export const getFormResponses = async (req: Request, res: Response) => {
   try {
     const formId = req.params.formId;
     if (!req.user || !req.user.id) {
-        return res.status(401).json({ message: 'Not authorized, user ID missing' });
+      return res
+        .status(401)
+        .json({ message: "Not authorized, user ID missing" });
     }
 
     const form = await Form.findOne({ _id: formId, admin: req.user.id });
     if (!form) {
-      return res.status(404).json({ message: 'Form not found or you are not authorized to view its responses' });
+      return res
+        .status(404)
+        .json({
+          message:
+            "Form not found or you are not authorized to view its responses",
+        });
     }
 
-    const responses = await FeedbackResponse.find({ form: formId }).sort({ submittedAt: -1 });
+    const responses = await FeedbackResponse.find({ form: formId }).sort({
+      submittedAt: -1,
+    });
     res.json(responses);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -83,51 +113,150 @@ export const exportFormResponsesCsv = async (req: Request, res: Response) => {
   try {
     const formId = req.params.formId;
     if (!req.user || !req.user.id) {
-      return res.status(401).json({ message: 'Not authorized, user ID missing' });
+      return res
+        .status(401)
+        .json({ message: "Not authorized, user ID missing" });
     }
 
     const form = await Form.findOne({ _id: formId, admin: req.user.id });
     if (!form) {
-      return res.status(404).json({ message: 'Form not found or you are not authorized to export its responses' });
+      return res
+        .status(404)
+        .json({
+          message:
+            "Form not found or you are not authorized to export its responses",
+        });
     }
 
-    const responses = await FeedbackResponse.find({ form: formId }).sort({ submittedAt: 1 });
+    const responses = await FeedbackResponse.find({ form: formId }).sort({
+      submittedAt: 1,
+    });
 
     if (responses.length === 0) {
-      return res.status(404).json({ message: 'No responses found for this form to export.' });
+      return res
+        .status(404)
+        .json({ message: "No responses found for this form to export." });
     }
 
     // --- CSV Generation Logic ---
-    const headers = ['Submission Time', ...form.questions.map(q => `"${q.questionText.replace(/"/g, '""')}"`)];
-    let csv = headers.join(',') + '\n';
+    const headers = [
+      "Submission Time",
+      ...form.questions.map((q) => `"${q.questionText.replace(/"/g, '""')}"`),
+    ];
+    let csv = headers.join(",") + "\n";
 
-    responses.forEach(response => {
+    responses.forEach((response) => {
       const row: string[] = [];
-      row.push(`"${new Date(response.submittedAt).toLocaleString().replace(/"/g, '""')}"`);
+      row.push(
+        `"${new Date(response.submittedAt)
+          .toLocaleString()
+          .replace(/"/g, '""')}"`
+      );
 
-      form.questions.forEach(question => {
-        const answer = response.answers.find(a => a.questionId === question.id);
-        let answerValue = '';
+      form.questions.forEach((question) => {
+        const answer = response.answers.find(
+          (a) => a.questionId === question.id
+        );
+        let answerValue = "";
 
         if (answer) {
-          if (question.type === 'text') {
-            answerValue = answer.answerText || '';
-          } else if (question.type === 'multiple-choice') {
-            answerValue = answer.selectedOptions?.join('; ') || '';
+          if (question.type === "text") {
+            answerValue = answer.answerText || "";
+          } else if (question.type === "multiple-choice") {
+            answerValue = answer.selectedOptions?.join("; ") || "";
           }
         }
         row.push(`"${answerValue.replace(/"/g, '""')}"`);
       });
-      csv += row.join(',') + '\n';
+      csv += row.join(",") + "\n";
     });
 
     // Set headers for CSV download
-    res.header('Content-Type', 'text/csv');
-    res.attachment(`${form.title.replace(/[^a-z0-9]/gi, '_')}_responses.csv`);
+    res.header("Content-Type", "text/csv");
+    res.attachment(`${form.title.replace(/[^a-z0-9]/gi, "_")}_responses.csv`);
     res.send(csv);
-
   } catch (error: any) {
-    console.error('Error exporting CSV:', error);
-    res.status(500).json({ message: 'Server error during CSV export.', error: error.message });
+    console.error("Error exporting CSV:", error);
+    res
+      .status(500)
+      .json({
+        message: "Server error during CSV export.",
+        error: error.message,
+      });
+  }
+};
+
+// @desc    Delete a form
+// @route   DELETE /api/forms/:id
+// @access  Private (Admin)
+export const deleteForm = async (req: Request, res: Response) => {
+  try {
+    const formId = req.params.id;
+
+    if (!req.user || !req.user.id) {
+      return res
+        .status(401)
+        .json({ message: "Not authorized, user ID missing" });
+    }
+
+    const form = await Form.findOne({ _id: formId, admin: req.user.id });
+
+    if (!form) {
+      return res
+        .status(404)
+        .json({
+          message: "Form not found or you are not authorized to delete it",
+        });
+    }
+
+    await FeedbackResponse.deleteMany({ form: formId });
+
+    await Form.deleteOne({ _id: formId });
+
+    res
+      .status(200)
+      .json({ message: "Form and its responses deleted successfully." });
+  } catch (error: any) {
+    console.error("Error deleting form:", error);
+    if (error.name === "CastError" && error.path === "_id") {
+      return res.status(400).json({ message: "Invalid form ID format." });
+    }
+    res
+      .status(500)
+      .json({ message: error.message || "Server error during form deletion." });
+  }
+};
+
+// @desc    Get a single form by ID
+// @route   GET /api/forms/:id/admin-details
+// @access  Private
+export const getAdminFormDetails = async (req: Request, res: Response) => {
+  try {
+    const formId = req.params.id;
+    if (!req.user || !req.user.id) {
+      return res
+        .status(401)
+        .json({ message: "Not authorized, user ID missing" });
+    }
+
+    const form = await Form.findOne({ _id: formId, admin: req.user.id }).select(
+      "-admin"
+    );
+
+    if (!form) {
+      return res
+        .status(404)
+        .json({
+          message:
+            "Form not found or you are not authorized to view its details",
+        });
+    }
+
+    res.json(form);
+  } catch (error: any) {
+    if (error.name === "CastError" && error.path === "_id") {
+      return res.status(400).json({ message: "Invalid form ID format." });
+    }
+    res.status(500).json({ message: error.message });
   }
 };

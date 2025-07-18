@@ -7,7 +7,7 @@ interface AuthResponse {
   token: string;
 }
 
-const baseUrl = "https://aynatask.onrender.com";
+const baseUrl = import.meta.env.VITE_BASE_URL;
 
 export const authApi = createApi({
   reducerPath: "authApi",

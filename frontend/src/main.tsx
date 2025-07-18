@@ -17,6 +17,8 @@ import ViewResponsesPage from "./pages/ViewResponsesPage";
 import React, { useMemo } from "react";
 import type { JSX } from "@emotion/react/jsx-runtime";
 import { CircularProgress, Typography } from "@mui/material";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 const PrivateRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
   const { isAuthenticated, isLoading } = useSelector(
@@ -180,7 +182,9 @@ const App: React.FC = () => {
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <App />
+      </LocalizationProvider>
     </Provider>
   </React.StrictMode>
 );

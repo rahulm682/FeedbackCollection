@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { Document, Schema } from "mongoose";
 
 // Define the interface for a single answer
 export interface IAnswer {
@@ -18,7 +18,7 @@ export interface IResponse extends Document {
 const ResponseSchema: Schema = new Schema({
   form: {
     type: Schema.Types.ObjectId,
-    ref: 'Form',
+    ref: "Form",
     required: true,
   },
   answers: [
@@ -34,4 +34,4 @@ const ResponseSchema: Schema = new Schema({
   },
 });
 
-export const Response = mongoose.model<IResponse>('Response', ResponseSchema);
+export const Response = mongoose.model<IResponse>("Response", ResponseSchema);
