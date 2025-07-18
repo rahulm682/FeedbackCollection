@@ -289,7 +289,7 @@ const ViewResponsesPage: React.FC = () => {
                           <ListItem key={option} disablePadding sx={{ display: 'flex', justifyContent: 'space-between' }}>
                             <ListItemText primary={option} />
                             <Typography variant="body2" color="text.secondary">
-                              ({count} responses)
+                              ({String(count)} responses)
                             </Typography>
                           </ListItem>
                         ))}

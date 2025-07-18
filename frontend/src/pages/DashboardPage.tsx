@@ -68,9 +68,24 @@ const DashboardPage: React.FC = () => {
       {!isLoading && !error && forms && forms.length > 0 && (
         <Grid container spacing={3}>
           {forms.map((form) => (
-            <Grid item xs={12} sm={6} md={4} key={form._id}>
+            <Box
+              key={form._id}
+              sx={{
+                width: "100%", // For extra-small screens (xs={12})
+                "@media (min-width:600px)": {
+                  // For small screens and up (sm={6})
+                  width: "50%",
+                },
+                "@media (min-width:900px)": {
+                  // For medium screens and up (md={4})
+                  width: "33.3333%",
+                },
+                px: 1.5,
+                py: 1.5,
+              }}
+            >
               <FormCard form={form} />
-            </Grid>
+            </Box>
           ))}
         </Grid>
       )}
