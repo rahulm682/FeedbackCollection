@@ -25,6 +25,8 @@ import {
 } from "@mui/material";
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 
+const baseUrl = "http://localhost:5000/api";
+
 const ViewResponsesPage: React.FC = () => {
   const { formId } = useParams<{ formId: string }>();
   const { data: form, isLoading: isFormLoading, error: formError } = useGetFormByIdQuery(formId || '');
@@ -109,7 +111,7 @@ const ViewResponsesPage: React.FC = () => {
       return;
     }
 
-    const exportUrl = `http://localhost:5000/api/forms/${formId}/responses/export-csv`;
+    const exportUrl = `${baseUrl}/forms/${formId}/responses/export-csv`;
 
     try {
       const response = await fetch(exportUrl, {
@@ -289,7 +291,7 @@ const ViewResponsesPage: React.FC = () => {
                           <ListItem key={option} disablePadding sx={{ display: 'flex', justifyContent: 'space-between' }}>
                             <ListItemText primary={option} />
                             <Typography variant="body2" color="text.secondary">
-                              ({count} responses)
+                              ({String(count)} responses)
                             </Typography>
                           </ListItem>
                         ))}
