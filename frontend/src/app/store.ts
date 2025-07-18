@@ -4,6 +4,7 @@ import { authApi } from '../features/auth/authApi.ts';
 import { formsApi } from '../features/forms/formsApi.ts';
 import { responsesApi } from '../features/responses/responsesApi.ts';
 import authReducer from '../features/auth/authSlice.ts';
+import themeReducer from '../features/theme/themeSlice.ts';
 
 export const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
     [formsApi.reducerPath]: formsApi.reducer,
     [responsesApi.reducerPath]: responsesApi.reducer,
     auth: authReducer,
+    theme: themeReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(authApi.middleware, formsApi.middleware, responsesApi.middleware),

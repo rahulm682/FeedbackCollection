@@ -1,17 +1,21 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, Button, Box, Menu, MenuItem, IconButton } from '@mui/material';
+import { AppBar, Toolbar, Typography, Button, Box, Menu, MenuItem, IconButton, useTheme } from '@mui/material';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { type RootState } from '../app/store';
 import { logout } from '../features/auth/authSlice';
+import { toggleThemeMode } from '../features/theme/themeSlice';
+import { type RootState } from '../app/store';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import AddIcon from '@mui/icons-material/Add';
 import DashboardIcon from '@mui/icons-material/Dashboard';
+import Brightness4Icon from '@mui/icons-material/Brightness4'; 
+import Brightness7Icon from '@mui/icons-material/Brightness7';
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isAuthenticated, user } = useSelector((state: RootState) => state.auth);
+  const theme = useTheme();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -27,6 +31,10 @@ const Navbar: React.FC = () => {
     handleClose();
     dispatch(logout());
     navigate('/login');
+  };
+
+  const handleThemeToggle = () => {
+    dispatch(toggleThemeMode()); 
   };
 
   return (
@@ -58,6 +66,10 @@ const Navbar: React.FC = () => {
             <Typography variant="body1" sx={{ mr: 1 }}>
               Hello, {user?.name || user?.email || 'Admin'}
             </Typography>
+
+            <IconButton sx={{ ml: 1 }} onClick={handleThemeToggle} color="inherit">
+              {theme.palette.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+            </IconButton>
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -88,6 +100,9 @@ const Navbar: React.FC = () => {
           </Box>
         ) : (
           <Box>
+            <IconButton sx={{ ml: 1 }} onClick={handleThemeToggle} color="inherit">
+              {theme.palette.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+            </IconButton>
             <Button color="inherit" component={RouterLink} to="/login">
               Login
             </Button>

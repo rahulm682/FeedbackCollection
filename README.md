@@ -17,7 +17,6 @@ A full-stack web application designed to allow administrators to create custom f
     -   [Forms](#forms)
     -   [Responses](#responses)
 -   [Folder Structure](#folder-structure)
--   [License](#license)
 
 ## Features
 
@@ -33,6 +32,7 @@ A full-stack web application designed to allow administrators to create custom f
     * **Tabular View:** See all responses in a clear table format, with each question as a column.
     * **Summary View:** Get aggregated insights for multiple-choice questions (option counts) and a list of text answers.
 * **Responsive UI:** Built with Material-UI for a modern and adaptive user experience.
+* **Export Responses:** Download form responses in CSV format for easy analysis.
 
 ## Technologies Used
 
@@ -64,7 +64,7 @@ A full-stack web application designed to allow administrators to create custom f
 Before you begin, ensure you have the following installed:
 
 * **Node.js** (v18 or higher recommended)
-* **npm** or **Yarn** (npm comes with Node.js)
+* **npm** or **Yarn**
 * **MongoDB** (running locally or accessible via a cloud service like MongoDB Atlas)
 
 ## Installation
@@ -72,8 +72,8 @@ Before you begin, ensure you have the following installed:
 Clone the repository and set up both the backend and frontend.
 
 ```bash
-git clone <repository_url>
-cd AynaTask-6405d8e364a23089a1e7a1765fc83bc7f4159057
+git clone [Your_GitHub_Repository_URL_Here]
+cd [Your_Cloned_Repository_Folder_Name]
 ````
 
 ### Backend Setup
@@ -151,22 +151,26 @@ The backend API is built with Express.js and serves data for the frontend. All e
 
 ### Forms
 
-  * **`POST /api/forms`** (Private - Admin Only)
+  * **`POST /api/forms`** (Private)
       * Create a new feedback form.
       * **Headers:** `Authorization: Bearer <token>`
       * **Body:** `{ title, description?, questions: [{ id, type, questionText, options?, required }] }`
       * **Response:** `Form Object`
-  * **`GET /api/forms`** (Private - Admin Only)
+  * **`GET /api/forms`** (Private)
       * Get all forms created by the authenticated admin.
       * **Headers:** `Authorization: Bearer <token>`
       * **Response:** `Array of Form Objects`
   * **`GET /api/forms/:id`** (Public)
       * Get a single form by its ID (for public submission).
       * **Response:** `Form Object`
-  * **`GET /api/forms/:formId/responses`** (Private - Admin Only)
+  * **`GET /api/forms/:formId/responses`** (Private)
       * Get all responses for a specific form.
       * **Headers:** `Authorization: Bearer <token>`
       * **Response:** `Array of Response Objects`
+  * **`GET /api/forms/:formId/responses/export-csv`** (Private)
+      * Export all responses for a specific form as a CSV file.
+      * **Headers:** `Authorization: Bearer <token>`
+      * **Response:** `CSV file`
 
 ### Responses
 
@@ -180,7 +184,7 @@ The backend API is built with Express.js and serves data for the frontend. All e
 The project is divided into `backend` and `frontend` directories, each with its own dependencies and configuration.
 
 ```
-AynaTask-6405d8e364a23089a1e7a1765fc83bc7f4159057/
+AynaTask/
 ├── backend/
 │   ├── src/
 │   │   ├── app.ts             # Main Express application file
