@@ -25,6 +25,8 @@ import {
 } from "@mui/material";
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 
+const baseUrl = "https://aynatask.onrender.com";
+
 const ViewResponsesPage: React.FC = () => {
   const { formId } = useParams<{ formId: string }>();
   const { data: form, isLoading: isFormLoading, error: formError } = useGetFormByIdQuery(formId || '');
@@ -109,7 +111,7 @@ const ViewResponsesPage: React.FC = () => {
       return;
     }
 
-    const exportUrl = `http://localhost:5000/api/forms/${formId}/responses/export-csv`;
+    const exportUrl = `${baseUrl}i/forms/${formId}/responses/export-csv`;
 
     try {
       const response = await fetch(exportUrl, {
