@@ -15,7 +15,7 @@ export const formsApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Forms", "Form"],
+  tagTypes: ["Forms", "Form", "Responses"],
   endpoints: (builder) => ({
     createForm: builder.mutation<
       Form,
@@ -31,16 +31,26 @@ export const formsApi = createApi({
         method: "POST",
         body: formDetails,
       }),
+      invalidatesTags: [{ type: 'Forms', id: 'LIST' }],
     }),
     getAdminForms: builder.query<Form[], void>({
       query: () => "/",
-      providesTags: ["Forms"],
+      providesTags: [{ type: 'Forms', id: 'LIST' }],
     }),
     getFormById: builder.query<Form, string>({
       query: (formId) => `/${formId}`,
+      providesTags: (_result, _error, id) => [{ type: 'Form', id }],
     }),
     getFormResponses: builder.query<Response[], string>({
       query: (formId) => `/${formId}/responses`,
+      // Provide a tag for responses associated with a specific formId
+      providesTags: (result, _error, formId) =>
+        result
+          ? [
+              { type: 'Responses', id: formId },
+              { type: 'Responses', id: 'LIST' }, 
+            ]
+          : [{ type: 'Responses', id: 'LIST' }],
     }),
     deleteForm: builder.mutation<void, string>({
       query: (formId) => ({
@@ -48,7 +58,12 @@ export const formsApi = createApi({
         method: "DELETE",
       }),
       // This invalidates the cache for getAdminForms, forcing a refetch after deletion
-      invalidatesTags: ["Forms"],
+      invalidatesTags: (_result, _error, id) => [
+        { type: 'Forms', id: 'LIST' },
+        { type: 'Form', id },
+        { type: 'Responses', id }, // Also invalidate responses for this form
+        { type: 'Responses', id: 'LIST' }, // Invalidate overall responses list
+      ],
     }),
     getAdminFormDetails: builder.query<Form, string>({
       query: (formId) => `/${formId}/admin-details`,

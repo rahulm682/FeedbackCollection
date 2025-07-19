@@ -36,7 +36,7 @@ const DashboardPage: React.FC = () => {
         <Typography
           variant="h4"
           component="h1"
-          sx={{ fontWeight: "bold", color: "text.primary" }}
+          sx={{ fontWeight: "bold", color: "text.primary", ml: 3 }}
         >
           Dashboard
         </Typography>

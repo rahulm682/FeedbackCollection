@@ -66,7 +66,7 @@ const LoginPage: React.FC = () => {
             variant="h4"
             sx={{ mb: 3, fontWeight: "bold", color: "text.primary" }}
           >
-            Admin Login
+            Login
           </Typography>
           <Box
             component="form"

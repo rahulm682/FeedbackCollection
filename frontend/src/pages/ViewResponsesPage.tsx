@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import {
   useGetAdminFormDetailsQuery,
@@ -33,11 +33,13 @@ const ViewResponsesPage: React.FC = () => {
     data: form,
     isLoading: isFormLoading,
     error: formError,
+    refetch: adminFormDetailRefetch,
   } = useGetAdminFormDetailsQuery(formId || "");
   const {
     data: responses,
     isLoading: isResponsesLoading,
     error: responsesError,
+    refetch: responsesRefetch,
   } = useGetFormResponsesQuery(formId || "");
 
   const [viewType, setViewType] = useState<"tabular" | "summary">("tabular");
@@ -56,6 +58,12 @@ const ViewResponsesPage: React.FC = () => {
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
+
+  // to always show the latest responses available
+  useEffect(() => {
+    adminFormDetailRefetch();
+    responsesRefetch();
+  }, [adminFormDetailRefetch, responsesRefetch]);
 
   const tabularData = useMemo(() => {
     if (!form || !responses || responses.length === 0) return null;
@@ -277,7 +285,7 @@ const ViewResponsesPage: React.FC = () => {
             onClick={handleExportCsv}
             disabled={responses?.length === 0}
           >
-            Export as CSV
+            Export CSV
           </Button>
         </Box>
         {form.description && (

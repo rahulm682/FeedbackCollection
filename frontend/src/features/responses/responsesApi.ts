@@ -8,6 +8,7 @@ export const responsesApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: `${baseUrl}/api/responses`,
   }),
+  tagTypes: ["Forms", "Form", "Responses"],
   endpoints: (builder) => ({
     submitResponse: builder.mutation<
       { message: string; responseId: string },
@@ -18,6 +19,11 @@ export const responsesApi = createApi({
         method: "POST",
         body: responseDetails,
       }),
+      // Invalidate the 'Responses' tag for the specific formId
+      invalidatesTags: (_result, _error, { formId }) => [
+        { type: 'Responses', id: formId },
+        { type: 'Responses', id: 'LIST' },
+      ],
     }),
   }),
 });
