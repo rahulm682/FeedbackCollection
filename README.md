@@ -151,6 +151,7 @@ The backend API is built with Express.js and serves data for the frontend. All e
       * Register a new admin user.
       * **Body:** `{ name, email, password }`
       * **Response:** `{ _id, name, email, token }`
+      * **Password Rule:** The min length for password should be 6. More complex logic can also be incorporated
   * **`POST /api/auth/login`** (Public)
       * Authenticate a user and get a JWT token.
       * **Body:** `{ email, password }`
