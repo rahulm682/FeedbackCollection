@@ -1,5 +1,5 @@
 <!-- ````markdown -->
-# Feedback Platform
+# Feedback Collection Platform
 
 A full-stack web application designed to allow administrators to create custom feedback forms with various question types, share them publicly for response collection, and view submitted responses in a structured or summarized format. The application features user authentication for admin access and a responsive user interface built with React and Material-UI.
 
@@ -16,6 +16,7 @@ A full-stack web application designed to allow administrators to create custom f
     -   [Authentication](#authentication)
     -   [Forms](#forms)
     -   [Responses](#responses)
+-   [Approach and Design Decisions](#approach-and-design-decisions)
 -   [Folder Structure](#folder-structure)
 
 ## Features
@@ -65,7 +66,7 @@ A full-stack web application designed to allow administrators to create custom f
 
 Before you begin, ensure you have the following installed:
 
-* **Node.js** (v18 or higher recommended)
+* **Node.js** (v20 or higher recommended)
 * **npm** or **Yarn**
 * **MongoDB** (running locally or accessible via a cloud service like MongoDB Atlas)
 
@@ -150,8 +151,8 @@ The backend API is built with Express.js and serves data for the frontend. All e
   * **`POST /api/auth/register`** (Public)
       * Register a new admin user.
       * **Body:** `{ name, email, password }`
+      * **Password Rule:** Minimum 6 characters.
       * **Response:** `{ _id, name, email, token }`
-      * **Password Rule:** The min length for password should be 6. More complex logic can also be incorporated
   * **`POST /api/auth/login`** (Public)
       * Authenticate a user and get a JWT token.
       * **Body:** `{ email, password }`
@@ -194,6 +195,39 @@ The backend API is built with Express.js and serves data for the frontend. All e
       * Submit a response to a form.
       * **Body:** `{ formId, answers: [{ questionId, answerText?, selectedOptions? }] }`
       * **Response:** `{ message, responseId }`
+
+## Approach and Design Decisions
+
+This Feedback Collection Platform is designed with a clear separation of concerns using a **MERN stack** (MongoDB, Express.js, React, Node.js) architecture, leveraging TypeScript for improved code quality and maintainability.
+
+### Architectural Decisions:
+
+  * **Monorepo Structure (Logical Separation):** While the project is in a single repository, it's logically separated into `backend` and `frontend` directories. This allows for independent development, dependency management, and deployment of each part while keeping them cohesive for ease of development and understanding.
+  * **RESTful API Design:** The backend exposes a well-defined RESTful API for all interactions, including authentication, form management, and response submission. This ensures a stateless, scalable, and easily consumable interface for the frontend or any other client.
+  * **Token-Based Authentication (JWT):** JSON Web Tokens are used for secure authentication and authorization. This approach provides a stateless mechanism for verifying user identity across requests, reducing the need for session management on the server-side.
+  * **Separation of Concerns (MVC-like on Backend):** The backend follows a pattern similar to MVC (Model-View-Controller), with distinct layers for:
+      * **Models:** Mongoose schemas define the data structures for `User`, `Form`, and `Response`, enforcing data integrity and providing an interface for database interaction.,,
+      * **Controllers:** Handle the business logic and interact with models to fulfill API requests (e.g., `authController`, `formController`, `responseController`).,,
+      * **Routes:** Define the API endpoints and map them to the respective controller functions, applying middleware like `protect` for authentication.,,
+
+### Frontend Design Decisions:
+
+  * **React with TypeScript:** Chosen for building a dynamic and type-safe user interface. TypeScript greatly enhances code readability, helps catch errors early, and improves maintainability.
+  * **Redux Toolkit for State Management:** Provides a robust and efficient way to manage the application's global state. It simplifies complex state logic and offers utilities like `createSlice` and `configureStore`.
+  * **RTK Query for API Interaction:** Integrated with Redux Toolkit, RTK Query drastically simplifies data fetching, caching, and invalidation. It reduces boilerplate and provides powerful features like automatic re-fetching and optimistic updates, leading to a more efficient and responsive UI.
+  * **Material-UI for Component Library:** Utilized for a consistent, modern, and responsive design. Material-UI components accelerate UI development and ensure a polished user experience across different devices.
+  * **Client-Side Routing (React Router DOM):** Enables a single-page application experience, allowing for seamless navigation between different views without full page reloads.
+  * **Theming (Light/Dark Mode):** Implemented a theme slice in Redux to allow users to toggle between light and dark modes, enhancing user preference and accessibility.
+  * **UUID for Question IDs:** Ensures unique identification of questions within a form, which is crucial for handling responses and updates accurately.
+
+### Key Feature Implementations:
+
+  * **Dynamic Form Creation:** The `CreateFormPage` and `QuestionBuilder` components allow administrators to dynamically add and configure different types of questions (text, multiple-choice) with options for required fields.,
+  * **Public Submission:** Forms can be accessed and submitted by anyone via a unique public URL, enabling wide feedback collection.
+  * **Comprehensive Response Viewing:** `ViewResponsesPage` provides both a detailed tabular view for individual responses and a summary view for aggregated insights, especially useful for multiple-choice questions.
+  * **CSV Export:** Functionality to export responses to CSV is directly implemented on the backend (`exportFormResponsesCsv` controller) and accessible from the frontend, facilitating external data analysis.
+
+These decisions collectively aim to create a scalable, maintainable, and user-friendly feedback platform.
 
 ## Folder Structure
 
