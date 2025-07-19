@@ -61,15 +61,14 @@ const FormCard: React.FC<FormCardProps> = ({ form }) => {
   };
 
   const handleDeleteClick = () => {
-    setConfirmDialogOpen(true); // Open confirmation dialog
+    setConfirmDialogOpen(true); 
   };
 
   const handleConfirmDelete = async () => {
-    setConfirmDialogOpen(false); // Close dialog
+    setConfirmDialogOpen(false); 
     try {
       await deleteForm(form._id).unwrap();
       showSnackbar("Form deleted successfully!", "success");
-      // No need to manually refetch, RTK Query's invalidatesTags will handle it
     } catch (error: any) {
       console.error("Failed to delete form:", error);
       showSnackbar(
@@ -80,10 +79,9 @@ const FormCard: React.FC<FormCardProps> = ({ form }) => {
   };
 
   const handleCancelDelete = () => {
-    setConfirmDialogOpen(false); // Close dialog
+    setConfirmDialogOpen(false); 
   };
 
-  // Helper to determine if the form is expired
   const isFormExpired = form.expiresAt
     ? new Date(form.expiresAt) < new Date()
     : false;

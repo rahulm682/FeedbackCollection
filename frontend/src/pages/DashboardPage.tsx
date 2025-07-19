@@ -16,7 +16,6 @@ const DashboardPage: React.FC = () => {
   const { data: forms, isLoading, error, refetch } = useGetAdminFormsQuery();
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
 
-  // Effect to refetch forms when authentication status changes
   useEffect(() => {
     if (isAuthenticated) {
       refetch(); // Force a refetch of forms when user logs in/out/registers

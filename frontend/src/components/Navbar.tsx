@@ -230,7 +230,7 @@ const Navbar: React.FC = () => {
         )}
       </Toolbar>
       <Drawer
-        anchor="right" // Opens from the right
+        anchor="right" 
         open={drawerOpen}
         onClose={toggleDrawer(false)}
       >

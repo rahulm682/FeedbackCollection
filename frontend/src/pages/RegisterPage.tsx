@@ -4,8 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setCredentials } from "./../features/auth/authSlice";
 import { type RootState } from "./../app/store";
-
-// Material-UI Imports
 import {
   Box,
   Button,
