@@ -21,11 +21,12 @@ A full-stack web application designed to allow administrators to create custom f
 ## Features
 
 * **Admin Authentication:** Secure registration and login for administrators to manage forms.
-* **Form Creation:** Admins can create new feedback forms with a title, description, and multiple questions.
+* **Form Creation:** Admins can create new feedback forms with a title, description, multiple questions, and an optional expiry date.
 * **Question Types:** Supports two types of questions:
     * **Text Input:** For open-ended text answers.
     * **Multiple Choice:** For pre-defined options (single or multiple selections).
 * **Required Questions:** Mark questions as mandatory to ensure comprehensive responses.
+* **Form Expiry:** Forms can be set to expire, after which they will no longer accept responses.
 * **Public Form Submission:** Shareable public URLs for forms, allowing anyone to submit responses without authentication.
 * **Dashboard Overview:** Admins can view all their created forms on a centralized dashboard.
 * **Response Viewing:**
@@ -58,6 +59,7 @@ A full-stack web application designed to allow administrators to create custom f
 * **Redux Toolkit:** For efficient state management.
     * **RTK Query:** For simplified API data fetching, caching, and state management.
 * **UUID:** For generating unique IDs for questions.
+* **date-fns:** For date manipulation in `DateTimePicker`.
 
 ## Prerequisites
 
@@ -109,6 +111,11 @@ cd [Your_Cloned_Repository_Folder_Name]
     # or
     yarn install
     ```
+3.  Create a `.env` file in the `frontend` directory and add your backend API base URL:
+    ```env
+    VITE_BASE_URL=http://localhost:5000
+    ```
+      * Replace `http://localhost:5000` with the actual URL where your backend server is running if it's different.
 
 ## Running the Application
 
@@ -154,7 +161,7 @@ The backend API is built with Express.js and serves data for the frontend. All e
   * **`POST /api/forms`** (Private)
       * Create a new feedback form.
       * **Headers:** `Authorization: Bearer <token>`
-      * **Body:** `{ title, description?, questions: [{ id, type, questionText, options?, required }] }`
+      * **Body:** `{ title, description?, questions: [{ id, type, questionText, options?, required }], expiresAt? }`
       * **Response:** `Form Object`
   * **`GET /api/forms`** (Private)
       * Get all forms created by the authenticated admin.
@@ -162,6 +169,10 @@ The backend API is built with Express.js and serves data for the frontend. All e
       * **Response:** `Array of Form Objects`
   * **`GET /api/forms/:id`** (Public)
       * Get a single form by its ID (for public submission).
+      * **Response:** `Form Object`
+  * **`GET /api/forms/:id/admin-details`** (Private)
+      * Get a single form by its ID with admin-specific details (e.g., without filtering for expiry).
+      * **Headers:** `Authorization: Bearer <token>`
       * **Response:** `Form Object`
   * **`GET /api/forms/:formId/responses`** (Private)
       * Get all responses for a specific form.
@@ -171,6 +182,10 @@ The backend API is built with Express.js and serves data for the frontend. All e
       * Export all responses for a specific form as a CSV file.
       * **Headers:** `Authorization: Bearer <token>`
       * **Response:** `CSV file`
+  * **`DELETE /api/forms/:id`** (Private)
+      * Delete a form and all its associated responses.
+      * **Headers:** `Authorization: Bearer <token>`
+      * **Response:** `{ message }`
 
 ### Responses
 
@@ -192,7 +207,7 @@ AynaTask/
 │   │   │   └── db.ts          # MongoDB connection setup
 │   │   ├── controllers/
 │   │   │   ├── authController.ts    # User authentication logic
-│   │   │   ├── formController.ts    # Form creation and retrieval logic
+│   │   │   ├── formController.ts    # Form creation, retrieval, and response handling logic
 │   │   │   └── responseController.ts# Response submission logic
 │   │   ├── middleware/
 │   │   │   └── authMiddleware.ts    # JWT authentication middleware
@@ -216,7 +231,7 @@ AynaTask/
     │   ├── app/
     │   │   └── store.ts           # Redux store configuration
     │   ├── components/
-    │   │   ├── FormCard.tsx       # Component to display individual forms
+    │   │   ├── FormCard.tsx       # Component to display individual forms on dashboard
     │   │   ├── Navbar.tsx         # Navigation bar component
     │   │   └── QuestionBuilder.tsx# Component for building questions in form creation
     │   ├── features/
@@ -225,23 +240,26 @@ AynaTask/
     │   │   │   └── authSlice.ts   # Redux slice for authentication state
     │   │   ├── forms/
     │   │   │   └── formsApi.ts    # RTK Query API slice for forms
-    │   │   └── responses/
-    │   │       └── responsesApi.ts# RTK Query API slice for responses
+    │   │   ├── responses/
+    │   │   │   └── responsesApi.ts# RTK Query API slice for responses
+    │   │   └── theme/
+    │   │       └── themeSlice.ts  # Redux slice for theme (light/dark mode)
     │   ├── pages/
     │   │   ├── CreateFormPage.tsx # Page for creating new forms
-    │   │   ├── DashboardPage.tsx  # Admin dashboard page
+    │   │   ├── DashboardPage.tsx  # Admin dashboard page displaying created forms
     │   │   ├── LoginPage.tsx      # User login page
     │   │   ├── RegisterPage.tsx   # User registration page
     │   │   ├── SubmitFormPage.tsx # Public page for submitting form responses
-    │   │   └── ViewResponsesPage.tsx# Page for viewing form responses
+    │   │   └── ViewResponsesPage.tsx# Page for viewing form responses and their summaries
     │   ├── types/
-    │   │   └── index.ts           # TypeScript type definitions
+    │   │   └── index.ts           # TypeScript type definitions for data structures
     │   ├── index.css            # Global CSS styles
-    │   └── main.tsx             # Main React entry point and routing setup
+    │   └── main.tsx             # Main React entry point, routing, and theme setup
     ├── index.html             # Main HTML file
     ├── package.json           # Frontend dependencies and scripts
     ├── tsconfig.json          # Base TypeScript configuration for frontend
     ├── tsconfig.app.json      # TypeScript config for application code
     ├── tsconfig.node.json     # TypeScript config for Node.js specific files (like vite.config.ts)
-    └── vite.config.ts         # Vite configuration
+    ├── vite.config.ts         # Vite configuration
+    └── .env.example           # Example environment file
 ```
