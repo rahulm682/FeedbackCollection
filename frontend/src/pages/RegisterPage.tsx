@@ -14,7 +14,12 @@ import {
   CircularProgress,
   Link as MuiLink,
   Alert,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
 } from "@mui/material";
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 const RegisterPage: React.FC = () => {
   const [name, setName] = useState("");
@@ -55,22 +60,80 @@ const RegisterPage: React.FC = () => {
   };
 
   return (
-    <Container
-      component="main"
-      maxWidth="xs"
-      sx={{
-        height: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <Paper elevation={6} sx={{ p: 4, borderRadius: 3, width: "100%" }}>
+    
+    <Container component="main" maxWidth={false} disableGutters sx={{ height: "100vh", display: 'flex' }}>
+      {/* Left side - Application Info */}
+      <Box
+        sx={{
+          flex: { sm: 4, md: 7 },
+          background: "linear-gradient(45deg, #3498db 30%, #2c3e50 90%)",
+          color: "white",
+          display: { xs: "none", sm: "flex" },
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          p: 4,
+        }}
+      >
+        <Container maxWidth="md">
+          <Typography variant="h3" component="h1" gutterBottom sx={{ fontWeight: 700 }}>
+            Join the Platform
+          </Typography>
+          <Typography variant="h6" sx={{ mb: 4, color: 'rgba(255, 255, 255, 0.8)' }}>
+            Unlock powerful features by creating your account.
+          </Typography>
+          <List>
+            <ListItem>
+              <ListItemIcon>
+                <CheckCircleOutlineIcon sx={{ color: '#ecf0f1' }} />
+              </ListItemIcon>
+              <ListItemText primary="Create & Manage Feedback Forms" primaryTypographyProps={{ variant: 'h6' }} />
+            </ListItem>
+            <ListItem>
+              <ListItemIcon>
+                <CheckCircleOutlineIcon sx={{ color: '#ecf0f1' }} />
+              </ListItemIcon>
+              <ListItemText primary="Analyze Responses with Ease" primaryTypographyProps={{ variant: 'h6' }} />
+            </ListItem>
+            <ListItem>
+              <ListItemIcon>
+                <CheckCircleOutlineIcon sx={{ color: '#ecf0f1' }} />
+              </ListItemIcon>
+              <ListItemText primary="Export Data for Further Insights" primaryTypographyProps={{ variant: 'h6' }} />
+            </ListItem>
+             <ListItem>
+              <ListItemIcon>
+                <CheckCircleOutlineIcon sx={{ color: '#ecf0f1' }} />
+              </ListItemIcon>
+              <ListItemText primary="Collaborate with your Team" primaryTypographyProps={{ variant: 'h6' }} />
+            </ListItem>
+          </List>
+        </Container>
+      </Box>
+
+      {/* Right side - Register Form */}
+      <Box
+        component={Paper}
+        elevation={6}
+        square
+        sx={{
+            flex: { xs: 1, sm: 8, md: 5 },
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%',
+        }}
+      >
         <Box
           sx={{
+            my: 8,
+            mx: 4,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            width: '100%',
+            maxWidth: '400px'
           }}
         >
           <Typography
@@ -140,6 +203,7 @@ const RegisterPage: React.FC = () => {
               onChange={(e) => setConfirmPassword(e.target.value)}
               variant="outlined"
               sx={{ mb: 3 }}
+              error={!!passwordMismatchError}
             />
             {passwordMismatchError && (
               <Alert severity="error" sx={{ mb: 2 }}>
@@ -156,8 +220,7 @@ const RegisterPage: React.FC = () => {
               type="submit"
               fullWidth
               variant="contained"
-              color="secondary"
-              sx={{ py: 1.5, mb: 2, fontSize: "1.1rem" }}
+              sx={{ py: 1.5, mb: 2, fontSize: "1.1rem", bgcolor: '#3498db', '&:hover': { bgcolor: '#2980b9' } }}
               disabled={isLoading}
             >
               {isLoading ? (
@@ -171,6 +234,7 @@ const RegisterPage: React.FC = () => {
                 Already have an account?{" "}
                 <MuiLink
                   component="button"
+                  type="button"
                   onClick={() => navigate("/login")}
                   variant="body2"
                   sx={{ fontWeight: "bold" }}
@@ -181,7 +245,7 @@ const RegisterPage: React.FC = () => {
             </Box>
           </Box>
         </Box>
-      </Paper>
+      </Box>
     </Container>
   );
 };

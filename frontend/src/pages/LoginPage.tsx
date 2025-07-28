@@ -14,7 +14,12 @@ import {
   CircularProgress,
   Link as MuiLink,
   Alert,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
 } from "@mui/material";
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -43,22 +48,79 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <Container
-      component="main"
-      maxWidth="xs"
-      sx={{
-        height: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <Paper elevation={6} sx={{ p: 4, borderRadius: 3, width: "100%" }}>
+    <Container component="main" maxWidth={false} disableGutters sx={{ height: "100vh", display: 'flex' }}>
+      {/* Left side - Application Info */}
+      <Box
+        sx={{
+          flex: { sm: 4, md: 7 },
+          background: "linear-gradient(45deg, #2c3e50 30%, #3498db 90%)",
+          color: "white",
+          display: { xs: "none", sm: "flex" },
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          p: 4,
+        }}
+      >
+        <Container maxWidth="md">
+          <Typography variant="h3" component="h1" gutterBottom sx={{ fontWeight: 700 }}>
+            Feedback Collection Platform
+          </Typography>
+          <Typography variant="h6" sx={{ mb: 4, color: 'rgba(255, 255, 255, 0.8)' }}>
+            Streamline your feedback process with powerful, intuitive tools.
+          </Typography>
+          <List>
+            <ListItem>
+              <ListItemIcon>
+                <CheckCircleOutlineIcon sx={{ color: '#ecf0f1' }} />
+              </ListItemIcon>
+              <ListItemText primary="Dynamic Form Builder" primaryTypographyProps={{ variant: 'h6' }} />
+            </ListItem>
+            <ListItem>
+              <ListItemIcon>
+                <CheckCircleOutlineIcon sx={{ color: '#ecf0f1' }} />
+              </ListItemIcon>
+              <ListItemText primary="Real-time Response Tracking" primaryTypographyProps={{ variant: 'h6' }} />
+            </ListItem>
+            <ListItem>
+              <ListItemIcon>
+                <CheckCircleOutlineIcon sx={{ color: '#ecf0f1' }} />
+              </ListItemIcon>
+              <ListItemText primary="In-depth Analytics & CSV Export" primaryTypographyProps={{ variant: 'h6' }} />
+            </ListItem>
+             <ListItem>
+              <ListItemIcon>
+                <CheckCircleOutlineIcon sx={{ color: '#ecf0f1' }} />
+              </ListItemIcon>
+              <ListItemText primary="Secure & Role-Based Access" primaryTypographyProps={{ variant: 'h6' }} />
+            </ListItem>
+          </List>
+        </Container>
+      </Box>
+
+      {/* Right side - Login Form */}
+      <Box
+        component={Paper}
+        elevation={6}
+        square
+        sx={{
+            flex: { xs: 1, sm: 8, md: 5 },
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%',
+        }}
+      >
         <Box
           sx={{
+            my: 8,
+            mx: 4,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            width: '100%',
+            maxWidth: '400px'
           }}
         >
           <Typography
@@ -112,7 +174,7 @@ const LoginPage: React.FC = () => {
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ py: 1.5, mb: 2, fontSize: "1.1rem" }}
+              sx={{ py: 1.5, mb: 2, fontSize: "1.1rem", bgcolor: '#2c3e50', '&:hover': { bgcolor: '#34495e' } }}
               disabled={isLoading}
             >
               {isLoading ? (
@@ -126,6 +188,7 @@ const LoginPage: React.FC = () => {
                 Don't have an account?{" "}
                 <MuiLink
                   component="button"
+                  type="button"
                   onClick={() => navigate("/register")}
                   variant="body2"
                   sx={{ fontWeight: "bold" }}
@@ -136,7 +199,7 @@ const LoginPage: React.FC = () => {
             </Box>
           </Box>
         </Box>
-      </Paper>
+      </Box>
     </Container>
   );
 };
